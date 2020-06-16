@@ -156,7 +156,9 @@ def pad_image(img, name, pad_ratio=1, mode='debug'):
 def shift_select_intersections(intersections, pad_ratio=1.0, conf='CONF1'):
     """
     This function select all intersections that suit inside our padded area and also shift points and lines to be
-    possible to visualize properly.
+    possible to visualize properly. To reduce concurrent vanishing lines, I have divided the result image into grids
+    and select the grid with longest lines as the center point as vanishing point and discard all other intersections
+    at that grid.
     :param intersections: All possible intersections
     :param pad_ratio: Ratio of image that we accept Vanishing Points there
     :return: Accepted and shifted intersections.
@@ -190,7 +192,6 @@ def save_results(img, selected_intersections, name, mode='debug', conf='CONF1'):
     except FileExistsError as fe:
         pass
     for inter, i in zip(selected_intersections, range(len(selected_intersections))):
-
         result = cv2.line(result, (inter.line1[0], inter.line1[1]), (inter.line1[2], inter.line1[3]), (255, 0, 0), 5)
         result = cv2.line(result, (inter.line2[0], inter.line2[1]), (inter.line2[2], inter.line2[3]), (255, 0, 0), 5)
         result = cv2.circle(result, (inter.x, inter.y), radius=10, color=(0, 0, 255), thickness=-1)
@@ -209,7 +210,7 @@ def save_results(img, selected_intersections, name, mode='debug', conf='CONF1'):
     cv2.imwrite(f'../res/{name.split("_")[0]}/result_{conf}.jpg', result)
 
 
-def run(file_name, mode='debug'):
+def run(file_name, mode='debug', conf='CONF1'):
     """
     A function to call them all :) it does the magic in 3 steps:
     1. Extract all dominant lines using Hough Transform
@@ -239,9 +240,9 @@ def run(file_name, mode='debug'):
 if __name__ == '__main__':
     # file_name = '../data/cyclomedia1.jpg'
     for f in os.listdir('../data/'):
-        for conf in ['CONF1']: # config.sections():
+        for conf in config.sections(): # ['CONF1']: #
             try:
-                run(f'../data/{f}', conf)
+                run(f'../data/{f}', 'debug', conf)
             except Exception as e:
                 print(f + ' ' + conf)
                 print(e)

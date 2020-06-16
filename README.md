@@ -27,4 +27,5 @@ I have selected intersections based on three criteria.
 2. Take place by two lines that have a sharp angle to each other. Best result: 0 < theta < 22.5
 3. After dividing our image into grids (could be 100), just one intersection per grid is accepted and that intersection was the intersection between two longest lines at that grid.
 
-
+### RANSAC process
+By tuning previous steps it provide us with Minimal Solution Set that we can use by Random Sample Consensus. We need to find the differences between the intersections and set a hyper-parameter as epsilon to divide our sets to inliers and outliers and select the largest set as the first Vanishing Point and continue to reach smaller sets.  

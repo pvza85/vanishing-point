@@ -1,0 +1,5 @@
+*.ipynb
+res/*.jpg
+/.ipynb_chckpoints
+/.idea
+*.pyc
